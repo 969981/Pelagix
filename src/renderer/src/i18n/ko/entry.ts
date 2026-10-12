@@ -106,6 +106,12 @@ const messages: Translation<'entry'> = {
   'home.label': 'Pokémon HOME에 있음',
   'home.description': '이 포켓몬을 Pokémon HOME으로 보냈습니다.',
 
+  'attempts.label': '시도 횟수',
+  'attempts.unitLabel': '센 대상',
+  'attempts.unit.encounters': '조우',
+  'attempts.unit.eggs': '알',
+  'attempts.unit.resets': '리셋',
+  'attempts.unit.attempts': '시도',
   'nickname.label': '닉네임',
   'nickname.placeholder': '없음',
   'ot.label': '어버이',
@@ -147,6 +153,7 @@ const messages: Translation<'entry'> = {
   'error.ivsRange': '개체값은 0에서 {max} 사이의 정수로 입력하세요.',
   'error.evsPartial': '노력값 여섯 개를 모두 채우거나 모두 비워 두세요.',
   'error.evsRange': '노력값은 0에서 {max} 사이의 정수로 입력하세요.',
+  'error.attempts': '횟수는 1에서 {max} 사이의 정수를 입력하세요.',
 
   'toast.gone.title': '그 기록은 더 이상 없습니다',
   'toast.gone.body': '이미 삭제되었을 수 있습니다.',

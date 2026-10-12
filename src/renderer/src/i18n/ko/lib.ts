@@ -38,6 +38,11 @@ const messages: Translation<'lib'> = {
   'values.pidTitle': 'PID {pid}',
   'values.ivsTitle': '개체값: HP / 공격 / 방어 / 특수공격 / 특수방어 / 스피드',
   'values.evsTitle': '노력값: HP / 공격 / 방어 / 특수공격 / 특수방어 / 스피드',
+  'values.count.encounters': { other: '조우 {count}회' },
+  'values.count.eggs': { other: '알 {count}개' },
+  'values.count.resets': { other: '리셋 {count}회' },
+  'values.count.attempts': { other: '시도 {count}회' },
+  'values.countTitle': '이로치 헌팅: {counter}',
 
   'storage.warn.newer': '이 세이브는 더 새로운 버전의 Pelagix(형식 {version})에서 작성되었습니다. 이 버전이 이해하지 못하는 내용은 제외했습니다.',
   'storage.warn.upgraded': '세이브를 형식 {from}에서 {to}(으)로 업그레이드했습니다.',

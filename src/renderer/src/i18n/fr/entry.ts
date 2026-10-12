@@ -106,6 +106,12 @@ const messages: Translation<'entry'> = {
   'home.label': 'Dans Pokémon HOME',
   'home.description': 'Vous avez envoyé ce Pokémon dans Pokémon HOME.',
 
+  'attempts.label': 'Compteur de shasse',
+  'attempts.unitLabel': 'Unité comptée',
+  'attempts.unit.encounters': 'Rencontres',
+  'attempts.unit.eggs': 'Œufs',
+  'attempts.unit.resets': 'Resets',
+  'attempts.unit.attempts': 'Tentatives',
   'nickname.label': 'Surnom',
   'nickname.placeholder': 'Aucun',
   'ot.label': 'Dresseur d’origine',
@@ -147,6 +153,7 @@ const messages: Translation<'entry'> = {
   'error.ivsRange': 'Les IV sont des nombres entiers de 0 à {max}.',
   'error.evsPartial': 'Remplissez les six EV ou laissez-les tous vides.',
   'error.evsRange': 'Les EV sont des nombres entiers de 0 à {max}.',
+  'error.attempts': 'Saisissez un nombre entier de 1 à {max} pour le compteur.',
 
   'toast.gone.title': 'Cette entrée n’existe plus',
   'toast.gone.body': 'Elle a peut-être déjà été supprimée.',

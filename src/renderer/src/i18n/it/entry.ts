@@ -106,6 +106,12 @@ const messages: Translation<'entry'> = {
   'home.label': 'In Pokémon HOME',
   'home.description': 'Hai inviato questo Pokémon a Pokémon HOME.',
 
+  'attempts.label': 'Contatore della caccia',
+  'attempts.unitLabel': 'Cosa hai contato',
+  'attempts.unit.encounters': 'Incontri',
+  'attempts.unit.eggs': 'Uova',
+  'attempts.unit.resets': 'Reset',
+  'attempts.unit.attempts': 'Tentativi',
   'nickname.label': 'Soprannome',
   'nickname.placeholder': 'Nessuno',
   'ot.label': 'Allenatore originale',
@@ -147,6 +153,7 @@ const messages: Translation<'entry'> = {
   'error.ivsRange': 'Per gli IV usa numeri interi da 0 a {max}.',
   'error.evsPartial': 'Compila tutti e sei gli EV, oppure lasciali tutti vuoti.',
   'error.evsRange': 'Per gli EV usa numeri interi da 0 a {max}.',
+  'error.attempts': 'Usa un numero intero da 1 a {max} per il contatore.',
 
   'toast.gone.title': 'Questa voce non esiste più',
   'toast.gone.body': 'Forse è già stata eliminata.',

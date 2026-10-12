@@ -106,6 +106,12 @@ const messages: Translation<'entry'> = {
   'home.label': '已在 Pokémon HOME 中',
   'home.description': '你已将这只宝可梦传送到 Pokémon HOME。',
 
+  'attempts.label': '刷闪计数',
+  'attempts.unitLabel': '计数对象',
+  'attempts.unit.encounters': '遇敌',
+  'attempts.unit.eggs': '孵蛋',
+  'attempts.unit.resets': '重置',
+  'attempts.unit.attempts': '尝试',
   'nickname.label': '昵称',
   'nickname.placeholder': '无',
   'ot.label': '初训家',
@@ -147,6 +153,7 @@ const messages: Translation<'entry'> = {
   'error.ivsRange': '个体值请输入 0 到 {max} 的整数。',
   'error.evsPartial': '请填写全部六项努力值，或全部留空。',
   'error.evsRange': '努力值请输入 0 到 {max} 的整数。',
+  'error.attempts': '计数请输入 1 到 {max} 的整数。',
 
   'toast.gone.title': '该记录已不存在',
   'toast.gone.body': '可能已经被删除。',

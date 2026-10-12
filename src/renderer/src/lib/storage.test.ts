@@ -585,3 +585,49 @@ describe('the ability of an entry', () => {
     expect(again.save.version).toBe(1)
   })
 })
+
+describe('the hunt counter of a shiny entry', () => {
+  const base = { id: 'c1', species: 25, form: 0, shiny: true, game: 'red', kind: 'wild', createdAt: '2026-01-01T00:00:00.000Z', updatedAt: '2026-01-01T00:00:00.000Z' }
+  const NOW = '2026-02-02T00:00:00.000Z'
+
+  it('keeps a valid number and unit, after the EVs', () => {
+    const { entry, repaired } = checkEntry({ ...base, attemptUnit: 'eggs', attempts: 412, fingerprint: '44:1:2', evs: [0, 0, 0, 0, 0, 0] }, NOW)
+    expect(repaired).toBe(false)
+    expect(entry).toMatchObject({ attempts: 412, attemptUnit: 'eggs' })
+    expect(Object.keys(entry!).slice(-6)).toEqual(['evs', 'attempts', 'attemptUnit', 'fingerprint', 'createdAt', 'updatedAt'])
+    for (const unit of ['encounters', 'eggs', 'resets', 'attempts']) expect(checkEntry({ ...base, attempts: 1, attemptUnit: unit }, NOW).entry).toMatchObject({ attempts: 1, attemptUnit: unit })
+    expect(checkEntry({ ...base, attempts: 9_999_999, attemptUnit: 'resets' }, NOW).entry).toMatchObject({ attempts: 9_999_999 })
+  })
+
+  it('leaves it out of an entry that has none', () => {
+    const { entry, repaired } = checkEntry(base, NOW)
+    expect(repaired).toBe(false)
+    expect(entry).toEqual(base)
+  })
+
+  it.each([0, -5, 1.5, 10_000_000, '1234', NaN, [1], true])('drops the number %j and its unit, keeping the entry', (bad) => {
+    const { entry, repaired } = checkEntry({ ...base, notes: 'n', attempts: bad, attemptUnit: 'resets' }, NOW)
+    expect(repaired).toBe(true)
+    expect(entry).toEqual({ ...base, notes: 'n' })
+  })
+
+  it('counts encounters when the unit is missing or unknown', () => {
+    expect(checkEntry({ ...base, attempts: 1234 }, NOW)).toMatchObject({ repaired: false, entry: { attempts: 1234, attemptUnit: 'encounters' } })
+    for (const bad of ['Eggs', 'soft resets', '', 3, {}]) expect(checkEntry({ ...base, attempts: 1234, attemptUnit: bad }, NOW)).toMatchObject({ repaired: true, entry: { attempts: 1234, attemptUnit: 'encounters' } })
+  })
+
+  it('drops a counter from an entry that is not shiny, and a unit without a number', () => {
+    const plain = checkEntry({ ...base, shiny: false, attempts: 1234, attemptUnit: 'eggs' }, NOW)
+    expect(plain.repaired).toBe(true)
+    expect(plain.entry).toEqual({ ...base, shiny: false })
+    expect(checkEntry({ ...base, attemptUnit: 'eggs' }, NOW).entry).toEqual(base)
+  })
+
+  it('survives an export and import unchanged, at save version 1', () => {
+    const entry = { ...base, attempts: 5021, attemptUnit: 'resets' }
+    const first = parseSaveReport({ app: 'pelagix', version: 1, entries: [entry] }, NOW)
+    const again = parseSaveReport(JSON.parse(JSON.stringify(first.save)), NOW)
+    expect(again.save.entries[0]).toEqual(entry)
+    expect(again.save.version).toBe(1)
+  })
+})

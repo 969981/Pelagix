@@ -35,6 +35,11 @@ const messages: Translation<'lib'> = {
   'values.pidTitle': 'PID {pid}',
   'values.ivsTitle': 'IV: PS / Attacco / Difesa / Att. Sp. / Dif. Sp. / Velocità',
   'values.evsTitle': 'EV: PS / Attacco / Difesa / Att. Sp. / Dif. Sp. / Velocità',
+  'values.count.encounters': { one: '{count} incontro', many: '{count} incontri', other: '{count} incontri' },
+  'values.count.eggs': { one: '{count} uovo', many: '{count} uova', other: '{count} uova' },
+  'values.count.resets': { one: '{count} reset', many: '{count} reset', other: '{count} reset' },
+  'values.count.attempts': { one: '{count} tentativo', many: '{count} tentativi', other: '{count} tentativi' },
+  'values.countTitle': 'Caccia cromatica: {counter}',
   'storage.warn.newer': 'Questo salvataggio è stato scritto da una versione più recente di Pelagix (formato {version}): ciò che questa versione non capisce è stato escluso.',
   'storage.warn.upgraded': 'Salvataggio aggiornato dal formato {from} al formato {to}.',
   'storage.warn.dropped': {

@@ -106,6 +106,12 @@ const messages: Translation<'entry'> = {
   'home.label': 'In Pokémon HOME',
   'home.description': 'Du hast dieses Pokémon an Pokémon HOME gesendet.',
 
+  'attempts.label': 'Hunt-Zähler',
+  'attempts.unitLabel': 'Gezählt wurden',
+  'attempts.unit.encounters': 'Encounters',
+  'attempts.unit.eggs': 'Eier',
+  'attempts.unit.resets': 'Resets',
+  'attempts.unit.attempts': 'Versuche',
   'nickname.label': 'Spitzname',
   'nickname.placeholder': 'Keiner',
   'ot.label': 'Originaltrainer',
@@ -147,6 +153,7 @@ const messages: Translation<'entry'> = {
   'error.ivsRange': 'Gib für die DVs ganze Zahlen von 0 bis {max} ein.',
   'error.evsPartial': 'Fülle alle sechs EVs aus oder lass alle sechs leer.',
   'error.evsRange': 'Gib für die EVs ganze Zahlen von 0 bis {max} ein.',
+  'error.attempts': 'Gib für den Zähler eine ganze Zahl von 1 bis {max} ein.',
 
   'toast.gone.title': 'Diesen Eintrag gibt es nicht mehr',
   'toast.gone.body': 'Vielleicht wurde er bereits gelöscht.',

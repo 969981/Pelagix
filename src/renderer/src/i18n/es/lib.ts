@@ -38,6 +38,11 @@ const messages: Translation<'lib'> = {
   'values.pidTitle': 'PID {pid}',
   'values.ivsTitle': 'IV: PS / Ataque / Defensa / At. Esp. / Def. Esp. / Velocidad',
   'values.evsTitle': 'EV: PS / Ataque / Defensa / At. Esp. / Def. Esp. / Velocidad',
+  'values.count.encounters': { one: '{count} encuentro', many: '{count} encuentros', other: '{count} encuentros' },
+  'values.count.eggs': { one: '{count} huevo', many: '{count} huevos', other: '{count} huevos' },
+  'values.count.resets': { one: '{count} reinicio', many: '{count} reinicios', other: '{count} reinicios' },
+  'values.count.attempts': { one: '{count} intento', many: '{count} intentos', other: '{count} intentos' },
+  'values.countTitle': 'Caza variocolor: {counter}',
 
   'storage.warn.newer': 'Este guardado lo creó una versión más reciente de Pelagix (formato {version}); se ha omitido todo lo que esta versión no entiende.',
   'storage.warn.upgraded': 'Guardado actualizado del formato {from} al {to}.',

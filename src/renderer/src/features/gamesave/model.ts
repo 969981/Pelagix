@@ -151,7 +151,9 @@ export function entryFromPokemon(dex: Dex, pokemon: GameSavePokemon, gameId: str
     pid: typeof pokemon.pid === 'string' ? pokemon.pid : '',
     ivs: Array.isArray(pokemon.ivs) ? pokemon.ivs : [],
     evs: Array.isArray(pokemon.evs) ? pokemon.evs : [],
-    inHome: false
+    inHome: false,
+    attempts: null,
+    attemptUnit: null
   }
   return { ...draftToInput(settleDraft(dex, draft)), fingerprint: pokemon.fingerprint }
 }

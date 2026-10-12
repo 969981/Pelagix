@@ -38,6 +38,11 @@ const messages: Translation<'lib'> = {
   'values.pidTitle': 'PID {pid}',
   'values.ivsTitle': '個体値：HP / こうげき / ぼうぎょ / とくこう / とくぼう / すばやさ',
   'values.evsTitle': '努力値：HP / こうげき / ぼうぎょ / とくこう / とくぼう / すばやさ',
+  'values.count.encounters': { other: 'エンカウント{count}回' },
+  'values.count.eggs': { other: 'タマゴ{count}個' },
+  'values.count.resets': { other: 'リセット{count}回' },
+  'values.count.attempts': { other: '試行{count}回' },
+  'values.countTitle': '色違い厳選：{counter}',
 
   'storage.warn.newer': 'このセーブは新しいバージョンのPelagix（形式{version}）で書き込まれています。このバージョンで扱えない内容は除外されました。',
   'storage.warn.upgraded': 'セーブを形式{from}から{to}に更新しました。',

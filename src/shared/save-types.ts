@@ -22,6 +22,11 @@ export const PID_PATTERN = /^[0-9A-F]{8}$/
 export const MAX_IV = 31
 export const MAX_EV = 255
 
+/** What a shiny hunt's counter counted. "attempts" is the generic one, for anything that is none of the others. */
+export const ATTEMPT_UNITS = ['encounters', 'eggs', 'resets', 'attempts'] as const
+export type AttemptUnit = (typeof ATTEMPT_UNITS)[number]
+export const MAX_ATTEMPTS = 9_999_999
+
 /** One logged Pokémon. A species/form may have any number of entries, across any games. */
 export interface CatchEntry {
   id: string
@@ -62,6 +67,13 @@ export interface CatchEntry {
   ivs?: StatSpread
   /** Effort values, 0 to 255 each. */
   evs?: StatSpread
+  /**
+   * How many it took to get this shiny: a whole number from 1 to `MAX_ATTEMPTS`. Only on shiny
+   * entries, and always together with `attemptUnit`.
+   */
+  attempts?: number
+  /** What `attempts` counts, as a fixed English id (never translated text). Only with `attempts`. */
+  attemptUnit?: AttemptUnit
   /**
    * Set on entries made by "Import from a game save": the reader's fingerprint of that Pokémon
    * (`GameSavePokemon.fingerprint`), so the same Pokémon is not imported twice. Never shown.

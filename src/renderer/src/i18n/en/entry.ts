@@ -130,6 +130,14 @@ const messages = {
   'home.label': 'In Pokémon HOME',
   'home.description': 'You have sent this Pokémon to Pokémon HOME.',
 
+  // The counter of a shiny hunt, shown with the Shiny switch on: a number and what it counts.
+  'attempts.label': 'Hunt counter',
+  'attempts.unitLabel': 'Counted in',
+  'attempts.unit.encounters': 'Encounters',
+  'attempts.unit.eggs': 'Eggs',
+  'attempts.unit.resets': 'Resets',
+  'attempts.unit.attempts': 'Attempts',
+
   // Details.
   'nickname.label': 'Nickname',
   'nickname.placeholder': 'None',
@@ -177,6 +185,7 @@ const messages = {
   'error.ivsRange': 'Use whole numbers from 0 to {max} for the IVs.',
   'error.evsPartial': 'Fill in all six EVs, or leave all six empty.',
   'error.evsRange': 'Use whole numbers from 0 to {max} for the EVs.',
+  'error.attempts': 'Use a whole number from 1 to {max} for the counter.',
 
   // Toasts and notes.
   'toast.gone.title': 'That entry no longer exists',

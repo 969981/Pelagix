@@ -38,6 +38,11 @@ const messages: Translation<'lib'> = {
   'values.pidTitle': 'PID {pid}',
   'values.ivsTitle': '个体值：HP / 攻击 / 防御 / 特攻 / 特防 / 速度',
   'values.evsTitle': '努力值：HP / 攻击 / 防御 / 特攻 / 特防 / 速度',
+  'values.count.encounters': { other: '遇敌 {count} 次' },
+  'values.count.eggs': { other: '孵蛋 {count} 个' },
+  'values.count.resets': { other: '重置 {count} 次' },
+  'values.count.attempts': { other: '尝试 {count} 次' },
+  'values.countTitle': '刷闪：{counter}',
 
   'storage.warn.newer': '此存档由更新版本的 Pelagix 写入（格式 {version}）；当前版本无法识别的内容已被略去。',
   'storage.warn.upgraded': '存档已从格式 {from} 升级到 {to}。',

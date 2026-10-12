@@ -235,7 +235,9 @@ export function entryFromRow(dex: Dex, row: ShinyDexRow, pokemon: readonly [numb
     pid: '',
     ivs: [],
     evs: [],
-    inHome: false
+    inHome: false,
+    attempts: null,
+    attemptUnit: null
   }
   return { ...draftToInput(settleDraft(dex, draft)), fingerprint }
 }

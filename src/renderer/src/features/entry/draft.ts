@@ -7,7 +7,7 @@
 
 import { ABILITIES, ABILITY_BY_ID } from '@shared/abilities'
 import type { EncounterRow, FormSummary, SpeciesDetail, SpeciesSummary } from '@shared/dex-types'
-import { MAX_EV, MAX_IV, type CatchEntry, type EntryGender, type EntryKind, type StatSpread } from '@shared/save-types'
+import { ATTEMPT_UNITS, MAX_ATTEMPTS, MAX_EV, MAX_IV, type AttemptUnit, type CatchEntry, type EntryGender, type EntryKind, type StatSpread } from '@shared/save-types'
 import { languageTag } from '@shared/languages'
 import { rowGender, rowLocation, type GameSources } from '@renderer/domain/encounters'
 import { activeLanguage, t, type MessageKey } from '@renderer/i18n/runtime'
@@ -52,6 +52,10 @@ export interface Draft {
   evs: StatBoxes
   /** The Pokémon has been sent to Pokémon HOME. */
   inHome: boolean
+  /** The counter of a shiny hunt as typed, or null. Kept while Shiny is off; it is only saved with Shiny on. */
+  attempts: number | null
+  /** What the counter counts once the user (or the saved entry) has said so; null follows `defaultAttemptUnit`. */
+  attemptUnit: AttemptUnit | null
 }
 
 export type StatBoxes = readonly (number | null)[]
@@ -161,7 +165,9 @@ export function draftFromPreset(dex: Dex, preset: EntryPreset, defaults: DraftDe
     pid: '',
     ivs: NO_STATS,
     evs: NO_STATS,
-    inHome: false
+    inHome: false,
+    attempts: null,
+    attemptUnit: null
   }
   return settleDraft(dex, draft)
 }
@@ -192,7 +198,10 @@ export function draftFromEntry(entry: CatchEntry): Draft {
     pid: entry.pid ?? '',
     ivs: entry.ivs ?? NO_STATS,
     evs: entry.evs ?? NO_STATS,
-    inHome: entry.inHome === true
+    inHome: entry.inHome === true,
+    attempts: entry.shiny && entry.attempts !== undefined ? entry.attempts : null,
+    // A saved unit is somebody's choice already: a change of method does not replace it.
+    attemptUnit: entry.shiny && entry.attempts !== undefined ? (entry.attemptUnit ?? 'encounters') : null
   }
 }
 
@@ -220,7 +229,9 @@ export function draftForAnotherGame(dex: Dex, draft: Draft, defaults: DraftDefau
     pid: '',
     ivs: NO_STATS,
     evs: NO_STATS,
-    inHome: false
+    inHome: false,
+    attempts: null,
+    attemptUnit: null
   })
 }
 
@@ -275,6 +286,26 @@ export function hasValues(draft: Pick<Draft, 'pid' | 'ivs' | 'evs'>): boolean {
   return draft.pid.trim() !== '' || draft.ivs.some((v) => v !== null) || draft.evs.some((v) => v !== null)
 }
 
+const EGG_METHOD = /\b(?:eggs?|hatch(?:ed|ing)?|breeding|bred|masuda)\b/i
+const RESET_METHOD = /\bresets?\b/i
+
+/**
+ * What a hunt most likely counted, from how the Pokémon was obtained: eggs when it was bred or
+ * hatched, resets for a reset method, otherwise encounters. `method` is the stored English label
+ * ("Masuda Method", "Soft Resets" ...), never its translation.
+ */
+export function defaultAttemptUnit(kind: EntryKind, method: string): AttemptUnit {
+  if (kind === 'bred' || EGG_METHOD.test(method)) return 'eggs'
+  return RESET_METHOD.test(method) ? 'resets' : 'encounters'
+}
+
+/** The unit the editor shows: the one that was picked, else the one the kind and method suggest. */
+export function draftAttemptUnit(draft: Pick<Draft, 'kind' | 'method' | 'attemptUnit'>): AttemptUnit {
+  return draft.attemptUnit !== null && ATTEMPT_UNITS.includes(draft.attemptUnit) ? draft.attemptUnit : defaultAttemptUnit(draft.kind, draft.method)
+}
+
+const validAttempts = (value: number | null): value is number => value !== null && Number.isInteger(value) && value >= 1 && value <= MAX_ATTEMPTS
+
 /** The draft as a new entry: unset fields are left out. */
 export function draftToInput(draft: Draft): EntryInput {
   const patch = draftToPatch(draft)
@@ -287,6 +318,8 @@ export function draftToInput(draft: Draft): EntryInput {
 export function draftToPatch(draft: Draft): EntryPatch & Pick<EntryInput, 'species' | 'form' | 'game' | 'kind' | 'shiny'> {
   // An id that is no ability is left out, and the Hidden mark with it.
   const ability = draft.ability !== null && ABILITY_BY_ID.has(draft.ability) ? draft.ability : null
+  // The counter belongs to a shiny: with Shiny off it stays in the draft and out of the save.
+  const attempts = draft.shiny && validAttempts(draft.attempts) ? draft.attempts : undefined
   return {
     species: draft.species,
     form: draft.form,
@@ -311,6 +344,8 @@ export function draftToPatch(draft: Draft): EntryPatch & Pick<EntryInput, 'speci
     pid: parsePid(draft.pid) ?? undefined,
     ivs: parseSpread(draft.ivs, MAX_IV) ?? undefined,
     evs: parseSpread(draft.evs, MAX_EV) ?? undefined,
+    attempts,
+    attemptUnit: attempts !== undefined ? draftAttemptUnit(draft) : undefined,
     inHome: draft.inHome ? true : undefined
   }
 }
@@ -331,6 +366,7 @@ export interface DraftErrors {
   pid?: string
   ivs?: string
   evs?: string
+  attempts?: string
 }
 
 export interface ValidateOptions {
@@ -364,6 +400,7 @@ export function validateDraft(dex: Dex, draft: Draft, options: ValidateOptions):
   if (ivs !== undefined) errors.ivs = ivs
   const evs = spreadError(draft.evs, MAX_EV, 'evs')
   if (evs !== undefined) errors.evs = evs
+  if (draft.shiny && draft.attempts !== null && !validAttempts(draft.attempts)) errors.attempts = t('entry.error.attempts', { max: MAX_ATTEMPTS })
   return errors
 }
 

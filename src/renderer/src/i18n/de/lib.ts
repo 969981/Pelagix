@@ -38,6 +38,11 @@ const messages: Translation<'lib'> = {
   'values.pidTitle': 'PID {pid}',
   'values.ivsTitle': 'DVs: KP / Angriff / Verteidigung / Sp.-Ang. / Sp.-Vert. / Initiative',
   'values.evsTitle': 'EVs: KP / Angriff / Verteidigung / Sp.-Ang. / Sp.-Vert. / Initiative',
+  'values.count.encounters': { one: '{count} Encounter', other: '{count} Encounters' },
+  'values.count.eggs': { one: '{count} Ei', other: '{count} Eier' },
+  'values.count.resets': { one: '{count} Reset', other: '{count} Resets' },
+  'values.count.attempts': { one: '{count} Versuch', other: '{count} Versuche' },
+  'values.countTitle': 'Shiny-Hunt: {counter}',
 
   'storage.warn.newer': 'Dieser Speicherstand wurde von einer neueren Version von Pelagix geschrieben (Format {version}); alles, was diese Version nicht versteht, wurde ausgelassen.',
   'storage.warn.upgraded': 'Speicherstand von Format {from} auf {to} aktualisiert.',

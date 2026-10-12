@@ -106,6 +106,12 @@ const messages: Translation<'entry'> = {
   'home.label': 'Pokémon HOMEにいる',
   'home.description': 'このポケモンをPokémon HOMEに送りました。',
 
+  'attempts.label': '試行回数',
+  'attempts.unitLabel': '数えたもの',
+  'attempts.unit.encounters': 'エンカウント',
+  'attempts.unit.eggs': 'タマゴ',
+  'attempts.unit.resets': 'リセット',
+  'attempts.unit.attempts': '試行',
   'nickname.label': 'ニックネーム',
   'nickname.placeholder': 'なし',
   'ot.label': 'おや',
@@ -147,6 +153,7 @@ const messages: Translation<'entry'> = {
   'error.ivsRange': '個体値は0～{max}の整数で入力してください。',
   'error.evsPartial': '努力値は6つすべて入力するか、すべて空にしてください。',
   'error.evsRange': '努力値は0～{max}の整数で入力してください。',
+  'error.attempts': '試行回数は1～{max}の整数を入力してください。',
 
   'toast.gone.title': 'その記録はもうありません',
   'toast.gone.body': 'すでに削除された可能性があります。',

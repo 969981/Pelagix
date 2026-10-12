@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useLocation } from 'wouter'
 import { GAME_BY_ID, GAMES } from '@shared/games'
-import { MAX_EV, MAX_IV, type CatchEntry, type EntryGender, type EntryKind } from '@shared/save-types'
+import { ATTEMPT_UNITS, MAX_ATTEMPTS, MAX_EV, MAX_IV, type AttemptUnit, type CatchEntry, type EntryGender, type EntryKind } from '@shared/save-types'
 import { GameIcon, GenderIcon, ShinyMark, Sprite } from '@renderer/components/pokemon'
 import { Button, Checkbox, Combobox, cx, DateField, Dialog, Icon, Kbd, NumberField, SegmentedControl, Select, Switch, TextArea, TextField, type SelectOption } from '@renderer/components/ui'
 import { describeEntry } from '@renderer/domain/entries'
@@ -31,6 +31,7 @@ import {
   chooseLocation,
   chooseMethod,
   defaultKind,
+  draftAttemptUnit,
   draftForAnotherGame,
   draftFromEntry,
   draftFromPreset,
@@ -168,7 +169,7 @@ export function EntryEditor({ dex, request, open }: EntryEditorProps) {
   // Set the moment a save starts, so a second press cannot log the same catch twice.
   const saving = useRef(false)
 
-  const ids = { species: `${uid}-species`, game: `${uid}-game`, method: `${uid}-method`, location: `${uid}-location`, nickname: `${uid}-nickname`, level: `${uid}-level`, pid: `${uid}-pid`, values: `${uid}-values` }
+  const ids = { species: `${uid}-species`, game: `${uid}-game`, method: `${uid}-method`, location: `${uid}-location`, nickname: `${uid}-nickname`, level: `${uid}-level`, attempts: `${uid}-attempts`, pid: `${uid}-pid`, values: `${uid}-values` }
 
   // ---------------------------------------------------------------- what the draft refers to
 
@@ -259,7 +260,7 @@ export function EntryEditor({ dex, request, open }: EntryEditorProps) {
       setShowErrors(true)
       shake(formRef.current)
       if (errors.pid ?? errors.ivs ?? errors.evs) setValuesOpen(true)
-      const firstInvalid = errors.species ? ids.species : errors.game ? ids.game : errors.level ? ids.level : errors.pid ? ids.pid : undefined
+      const firstInvalid = errors.species ? ids.species : errors.game ? ids.game : errors.level ? ids.level : errors.attempts ? ids.attempts : errors.pid ? ids.pid : undefined
       if (firstInvalid) document.getElementById(firstInvalid)?.focus()
       return
     }
@@ -501,6 +502,7 @@ export function EntryEditor({ dex, request, open }: EntryEditorProps) {
     setDraft((d) => chooseMethod(d, suggestions, option, context))
   }
   const abilitySelect = useMemo<SelectOption<number>[]>(() => abilityOptions(draft.ability), [draft.ability])
+  const attemptUnitOptions = useMemo<SelectOption<AttemptUnit>[]>(() => ATTEMPT_UNITS.map((unit) => ({ value: unit, label: t(`entry.attempts.unit.${unit}`) })), [t])
   const changeAbility = (ability: number | null): void => patch(ability === null ? { ability, abilityHidden: false } : { ability })
 
   // The method and the location are stored in English (the datasets' labels) and shown in the active
@@ -726,6 +728,12 @@ export function EntryEditor({ dex, request, open }: EntryEditorProps) {
                 {showGmax && <Switch checked={draft.gmax} onChange={(gmax) => patch({ gmax })} label={t('entry.gmax.label')} description={t('entry.gmax.description')} />}
                 {showAlpha && <Switch checked={draft.alpha} onChange={(alpha) => patch({ alpha })} label={t('entry.alpha.label')} description={t('entry.alpha.description')} />}
               </div>
+              {draft.shiny && (
+                <>
+                  <NumberField id={ids.attempts} label={t('entry.attempts.label')} optional value={draft.attempts} onChange={(attempts) => patch({ attempts })} min={1} max={MAX_ATTEMPTS} error={errors.attempts} />
+                  <Select label={t('entry.attempts.unitLabel')} options={attemptUnitOptions} value={draftAttemptUnit(draft)} onChange={(attemptUnit) => patch({ attemptUnit })} />
+                </>
+              )}
               {draft.shiny && matched?.shiny === 'locked' && (
                 <p className="ee-warning ee-span" role="status">
                   <Icon name="warning" size={16} />
@@ -775,7 +783,7 @@ export function EntryEditor({ dex, request, open }: EntryEditorProps) {
             {showErrors && hasErrors(errors) && (
               <p className="ee-warning" role="alert">
                 <Icon name="warning" size={16} />
-                <span>{errors.species ?? errors.form ?? errors.game ?? errors.level ?? errors.date ?? errors.pid ?? errors.ivs ?? errors.evs}</span>
+                <span>{errors.species ?? errors.form ?? errors.game ?? errors.level ?? errors.date ?? errors.attempts ?? errors.pid ?? errors.ivs ?? errors.evs}</span>
               </p>
             )}
           </aside>

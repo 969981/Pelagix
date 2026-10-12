@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <sub>Windows 10 and 11 · version 0.7.0 · GPL-3.0 · an unofficial fan project</sub>
+  <sub>Windows 10 and 11 · version 0.8.0 · GPL-3.0 · an unofficial fan project</sub>
 </p>
 
 > The screenshots on this page come from version 0.1.0 running a generated demo collection
@@ -205,6 +205,7 @@ An entry records:
 | Ball | The balls usable in the chosen game are shown first; **Show all balls** reveals all 37. |
 | Gender, level, date | Gender choices follow the species. The date defaults to today. |
 | Shiny, Gigantamax, Alpha | Gigantamax is offered in Sword and Shield for forms that have it; Alpha in Legends: Arceus and Legends: Z-A. |
+| Hunt counter | For a shiny, from 0.8.0: how many it took, counted in encounters, eggs, resets or attempts. Optional. The unit is suggested from the method (eggs for a hatched Pokémon or the Masuda Method, resets for a reset method) and can be changed. It shows on the entry as a line such as "1,234 encounters". |
 | Nickname, Original Trainer, notes | The Original Trainer starts as your trainer name. |
 
 - When what you entered matches a known source, the editor says so and shows that source's level
@@ -650,7 +651,7 @@ npm install
 | Command | What it does |
 | --- | --- |
 | `npm run dev` | Starts the app in Electron with hot reload. The first run downloads the Electron binary. |
-| `npm test` | Runs the unit tests (1,845 tests in 56 files). |
+| `npm test` | Runs the unit tests (1,868 tests in 56 files). |
 | `npm run dist` | Builds the save reader, type-checks, builds, and packages the installer, the portable executable and the updater's files into `dist/`. Needs the .NET 10 SDK and the `PKHeX/` tree. Nothing is uploaded. |
 
 The datasets and the game icons are part of the repository, so nothing else has to be generated

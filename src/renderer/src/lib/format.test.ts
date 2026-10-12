@@ -1,6 +1,9 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
+import deLib from '@renderer/i18n/de/lib'
+import jaLib from '@renderer/i18n/ja/lib'
+import { installLanguage, setActiveLanguage } from '@renderer/i18n/runtime'
 import {
-  addDays, dayDiff, dexNo, ENTRY_KINDS, errorMessage, formatCount, formatDate, formatDateTime, formatMonth, genderLabel, genderSymbol, isIsoDate,
+  attemptsText, entryValues, addDays, dayDiff, dexNo, ENTRY_KINDS, errorMessage, formatCount, formatDate, formatDateTime, formatMonth, genderLabel, genderSymbol, isIsoDate,
   isIsoTimestamp, KIND_LABELS, kindLabel, levelRange, listText, parseIsoDate, percent, plural, pluralWord, ratio, timeAgo, todayIso, toIsoDate
 } from './format'
 import { newId } from './id'
@@ -220,5 +223,39 @@ describe('newId', () => {
     } finally {
       vi.unstubAllGlobals()
     }
+  })
+})
+
+describe('the hunt counter line', () => {
+  afterEach(() => setActiveLanguage('en'))
+
+  it('reads "1,234 encounters" in English', () => {
+    expect(attemptsText(1234, 'encounters')).toBe('1,234 encounters')
+    expect(attemptsText(1, 'encounters')).toBe('1 encounter')
+    expect(attemptsText(412, 'eggs')).toBe('412 eggs')
+    expect(attemptsText(1, 'eggs')).toBe('1 egg')
+    expect(attemptsText(5021, 'resets')).toBe('5,021 resets')
+    expect(attemptsText(9_999_999, 'attempts')).toBe('9,999,999 attempts')
+    expect(attemptsText(77)).toBe('77 encounters')
+  })
+
+  it('is the last line of a shiny entry, and absent from the others', () => {
+    const lines = entryValues({ shiny: true, pid: '0000BEEF', attempts: 1234, attemptUnit: 'resets' })
+    expect(lines.map((l) => l.id)).toEqual(['pid', 'attempts'])
+    expect(lines[1]).toEqual({ id: 'attempts', label: '', text: '1,234 resets', title: 'Shiny hunt: 1,234 resets' })
+    expect(entryValues({ shiny: true })).toEqual([])
+    expect(entryValues({ shiny: false, attempts: 1234, attemptUnit: 'resets' })).toEqual([])
+  })
+
+  it('is worded and grouped for the language', () => {
+    installLanguage('de', { lib: deLib })
+    setActiveLanguage('de')
+    expect(attemptsText(1234, 'eggs')).toBe('1.234 Eier')
+    expect(attemptsText(1, 'eggs')).toBe('1 Ei')
+    expect(attemptsText(5021, 'resets')).toBe('5.021 Resets')
+    installLanguage('ja', { lib: jaLib })
+    setActiveLanguage('ja')
+    expect(attemptsText(1234, 'encounters')).toBe('エンカウント1,234回')
+    expect(entryValues({ shiny: true, attempts: 412, attemptUnit: 'eggs' })[0]).toMatchObject({ text: 'タマゴ412個', title: '色違い厳選：タマゴ412個' })
   })
 })

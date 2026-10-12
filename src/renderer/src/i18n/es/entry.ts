@@ -106,6 +106,12 @@ const messages: Translation<'entry'> = {
   'home.label': 'En Pokémon HOME',
   'home.description': 'Has enviado este Pokémon a Pokémon HOME.',
 
+  'attempts.label': 'Contador de la caza',
+  'attempts.unitLabel': 'Qué contaste',
+  'attempts.unit.encounters': 'Encuentros',
+  'attempts.unit.eggs': 'Huevos',
+  'attempts.unit.resets': 'Reinicios',
+  'attempts.unit.attempts': 'Intentos',
   'nickname.label': 'Mote',
   'nickname.placeholder': 'Ninguno',
   'ot.label': 'Entrenador original',
@@ -147,6 +153,7 @@ const messages: Translation<'entry'> = {
   'error.ivsRange': 'Usa números enteros del 0 al {max} para los IV.',
   'error.evsPartial': 'Rellena los seis EV o deja los seis vacíos.',
   'error.evsRange': 'Usa números enteros del 0 al {max} para los EV.',
+  'error.attempts': 'Usa un número entero del 1 al {max} para el contador.',
 
   'toast.gone.title': 'Esa entrada ya no existe',
   'toast.gone.body': 'Puede que ya se haya eliminado.',

@@ -14,8 +14,8 @@ import type { ExportResult, PelagixApi } from '@shared/api'
 import { BALL_BY_ID } from '@shared/balls'
 import { isLanguageId } from '@shared/languages'
 import {
-  createEmptySave, DEFAULT_RULES, DEFAULT_SETTINGS, MAX_EV, MAX_IV, PID_PATTERN, SAVE_VERSION,
-  type AppSettings, type CatchEntry, type DexRules, type EntryGender, type EntryKind, type SaveFile, type StatSpread
+  ATTEMPT_UNITS, createEmptySave, DEFAULT_RULES, DEFAULT_SETTINGS, MAX_ATTEMPTS, MAX_EV, MAX_IV, PID_PATTERN, SAVE_VERSION,
+  type AppSettings, type AttemptUnit, type CatchEntry, type DexRules, type EntryGender, type EntryKind, type SaveFile, type StatSpread
 } from '@shared/save-types'
 import { t } from '@renderer/i18n/runtime'
 import { isIsoDate, isIsoTimestamp, toIsoDate } from './format'
@@ -36,6 +36,7 @@ const ENTRY_KIND_SET: ReadonlySet<string> = new Set<EntryKind>([
   'wild', 'static', 'gift', 'egg', 'trade', 'raid', 'tera', 'outbreak', 'shadow', 'walker', 'dream', 'event',
   'evolved', 'bred', 'transfer', 'other'
 ])
+const ATTEMPT_UNIT_SET: ReadonlySet<string> = new Set(ATTEMPT_UNITS)
 const RULE_KEYS = Object.keys(DEFAULT_RULES) as Array<keyof DexRules>
 
 type Dict = Record<string, unknown>
@@ -143,6 +144,11 @@ export function checkEntry(raw: unknown, now: string): EntryCheck {
     optional(key, (v) => (Array.isArray(v) && v.length === 6 && v.every((n) => isInt(n, 0, max)) ? (v.slice() as StatSpread) : undefined))
   const ivs = spread('ivs', MAX_IV)
   const evs = spread('evs', MAX_EV)
+  // The counter of a shiny hunt: it goes when the entry is not shiny, and a number alone counts encounters.
+  const attempts = optional('attempts', (v) => (shiny && isInt(v, 1, MAX_ATTEMPTS) ? v : undefined))
+  const attemptUnit =
+    optional('attemptUnit', (v) => (attempts !== undefined && typeof v === 'string' && ATTEMPT_UNIT_SET.has(v) ? (v as AttemptUnit) : undefined)) ??
+    (attempts !== undefined ? ('encounters' as const) : undefined)
   // Compared, never shown: kept exactly as written or not at all.
   const fingerprint = optional('fingerprint', (v) => (typeof v === 'string' && v !== '' && v.length <= FINGERPRINT_LIMIT ? v : undefined))
 
@@ -174,6 +180,8 @@ export function checkEntry(raw: unknown, now: string): EntryCheck {
     ...(pid !== undefined && { pid }),
     ...(ivs !== undefined && { ivs }),
     ...(evs !== undefined && { evs }),
+    ...(attempts !== undefined && { attempts }),
+    ...(attemptUnit !== undefined && { attemptUnit }),
     ...(fingerprint !== undefined && { fingerprint }),
     ...(inHome && { inHome: true as const }),
     createdAt,

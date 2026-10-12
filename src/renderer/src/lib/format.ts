@@ -7,7 +7,7 @@
  */
 
 import { languageTag } from '@shared/languages'
-import type { EntryGender, EntryKind } from '@shared/save-types'
+import type { AttemptUnit, EntryGender, EntryKind } from '@shared/save-types'
 import { activeLanguage, formatNumber, t, translate, type MessageKey } from '@renderer/i18n/runtime'
 import { abilityName, methodLabel } from '@renderer/i18n/terms'
 
@@ -277,7 +277,8 @@ export function errorMessage(err: unknown, fallback = t('lib.error.generic')): s
 
 export interface EntryValueLine {
   /** Which line this is, whatever the language. */
-  id: 'ability' | 'pid' | 'ivs' | 'evs'
+  id: 'ability' | 'pid' | 'ivs' | 'evs' | 'attempts'
+  /** "" for a line that says everything itself (the hunt counter). */
   label: string
   text: string
   /** A short mark after the text ("Hidden"). */
@@ -286,8 +287,25 @@ export interface EntryValueLine {
   title: string
 }
 
-/** An entry's ability, PID, IVs and EVs as short lines ("31 / 31 / 31 / 31 / 31 / 31"); only the ones it has. */
-export function entryValues(entry: { ability?: number; abilityHidden?: boolean; pid?: string; ivs?: readonly number[]; evs?: readonly number[] }): EntryValueLine[] {
+/** A hunt counter in the active language: `attemptsText(1234, 'encounters')` -> "1,234 encounters". */
+export function attemptsText(count: number, unit: AttemptUnit = 'encounters'): string {
+  return t(`lib.values.count.${unit}` as 'lib.values.count.encounters', { count })
+}
+
+/**
+ * An entry's ability, PID, IVs and EVs as short lines ("31 / 31 / 31 / 31 / 31 / 31"), then the
+ * counter of its shiny hunt ("1,234 encounters"); only the ones it has.
+ */
+export function entryValues(entry: {
+  ability?: number
+  abilityHidden?: boolean
+  pid?: string
+  ivs?: readonly number[]
+  evs?: readonly number[]
+  shiny?: boolean
+  attempts?: number
+  attemptUnit?: AttemptUnit
+}): EntryValueLine[] {
   const lines: EntryValueLine[] = []
   const ability = abilityName(entry.ability)
   if (ability !== undefined) {
@@ -303,6 +321,10 @@ export function entryValues(entry: { ability?: number; abilityHidden?: boolean; 
   if (entry.pid !== undefined) lines.push({ id: 'pid', label: t('lib.values.pid'), text: entry.pid, title: t('lib.values.pidTitle', { pid: entry.pid }) })
   if (entry.ivs !== undefined) lines.push({ id: 'ivs', label: t('lib.values.ivs'), text: entry.ivs.join(' / '), title: t('lib.values.ivsTitle') })
   if (entry.evs !== undefined) lines.push({ id: 'evs', label: t('lib.values.evs'), text: entry.evs.join(' / '), title: t('lib.values.evsTitle') })
+  if (entry.attempts !== undefined && entry.shiny !== false) {
+    const text = attemptsText(entry.attempts, entry.attemptUnit)
+    lines.push({ id: 'attempts', label: '', text, title: t('lib.values.countTitle', { counter: text }) })
+  }
   return lines
 }
 

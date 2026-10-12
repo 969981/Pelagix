@@ -11,7 +11,9 @@ import {
   canGmax,
   chooseLocation,
   chooseMethod,
+  defaultAttemptUnit,
   defaultKind,
+  draftAttemptUnit,
   draftForAnotherGame,
   draftFromEntry,
   draftFromPreset,
@@ -448,5 +450,80 @@ describe('the ability in the editor', () => {
     // An entry that holds the second "As One" keeps its own id selectable.
     expect(abilityOptions(267).find((o) => o.label === 'As One')?.value).toBe(267)
     expect(abilityOptions(267)).toHaveLength(options.length)
+  })
+})
+
+describe('the hunt counter', () => {
+  const options = { today: DEFAULTS.today }
+  const shiny = (extra: Partial<Draft> = {}): Draft => blank({ game: 'red', shiny: true, ...extra })
+
+  it('pre-selects the unit from the kind and the English method', () => {
+    expect(defaultAttemptUnit('wild', 'Tall grass')).toBe('encounters')
+    expect(defaultAttemptUnit('wild', 'Random Encounters')).toBe('encounters')
+    expect(defaultAttemptUnit('other', '')).toBe('encounters')
+    expect(defaultAttemptUnit('bred', '')).toBe('eggs')
+    expect(defaultAttemptUnit('bred', 'Hatched from an Egg')).toBe('eggs')
+    expect(defaultAttemptUnit('other', 'Masuda Method')).toBe('eggs')
+    expect(defaultAttemptUnit('other', 'Breeding')).toBe('eggs')
+    expect(defaultAttemptUnit('static', 'Soft Resets')).toBe('resets')
+    expect(defaultAttemptUnit('wild', 'Zone Resets')).toBe('resets')
+    expect(defaultAttemptUnit('other', 'Bench Resets')).toBe('resets')
+    // Only the English words decide: a translated method, or a word that merely contains one, does not.
+    expect(defaultAttemptUnit('other', '固定リセット')).toBe('encounters')
+    expect(defaultAttemptUnit('other', 'Reinicios de zona')).toBe('encounters')
+    expect(defaultAttemptUnit('wild', 'Preset route')).toBe('encounters')
+  })
+
+  it('follows the method until a unit is picked, and then keeps the pick', () => {
+    const draft = shiny({ kind: 'static', method: 'Soft Resets', attempts: 5021 })
+    expect(draftAttemptUnit(draft)).toBe('resets')
+    expect(draftToInput(draft)).toMatchObject({ attempts: 5021, attemptUnit: 'resets' })
+    expect(draftToInput({ ...draft, kind: 'other', method: 'Masuda Method' })).toMatchObject({ attempts: 5021, attemptUnit: 'eggs' })
+    const picked = { ...draft, attemptUnit: 'attempts' as const }
+    expect(draftToInput({ ...picked, kind: 'other', method: 'Masuda Method' })).toMatchObject({ attempts: 5021, attemptUnit: 'attempts' })
+  })
+
+  it('starts empty, is optional, and is left out of the save when empty', () => {
+    expect(blank()).toMatchObject({ attempts: null, attemptUnit: null })
+    const input = draftToInput(shiny())
+    expect(input).not.toHaveProperty('attempts')
+    expect(input).not.toHaveProperty('attemptUnit')
+    expect(validateDraft(dex, shiny(), options)).toEqual({})
+  })
+
+  it('is dropped with Shiny off and comes back, as typed, with Shiny on again', () => {
+    const typed = shiny({ attempts: 1234, attemptUnit: 'eggs' })
+    const off = { ...typed, shiny: false }
+    expect(off).toMatchObject({ attempts: 1234, attemptUnit: 'eggs' })
+    expect(draftToInput(off)).not.toHaveProperty('attempts')
+    expect(draftToInput(off)).not.toHaveProperty('attemptUnit')
+    const cleared = draftToPatch(off)
+    expect('attempts' in cleared && cleared.attempts === undefined && 'attemptUnit' in cleared && cleared.attemptUnit === undefined).toBe(true)
+    expect(draftToPreview(off, NOW)).not.toHaveProperty('attempts')
+    expect(draftToInput({ ...off, shiny: true })).toMatchObject({ shiny: true, attempts: 1234, attemptUnit: 'eggs' })
+    // A number that makes no sense does not block an entry that is not shiny.
+    expect(validateDraft(dex, { ...off, attempts: 0 }, options)).toEqual({})
+  })
+
+  it('round-trips through a saved entry, whose unit counts as picked', () => {
+    const entry = makeEntry(ID.pikachu, 0, { game: 'red', shiny: true, kind: 'wild', method: 'Tall grass', attempts: 412, attemptUnit: 'eggs' })
+    const draft = draftFromEntry(entry)
+    expect(draft).toMatchObject({ attempts: 412, attemptUnit: 'eggs' })
+    expect(draftToPatch({ ...draft, method: 'Soft Resets' })).toMatchObject({ attempts: 412, attemptUnit: 'eggs' })
+    expect(checkEntry({ ...entry, ...draftToPatch(draft) }, NOW).entry).toMatchObject({ attempts: 412, attemptUnit: 'eggs' })
+    expect(draftFromEntry(makeEntry(ID.pikachu, 0, { game: 'red', shiny: true }))).toMatchObject({ attempts: null, attemptUnit: null })
+    expect(draftFromEntry(makeEntry(ID.pikachu, 0, { game: 'red', shiny: false, attempts: 9, attemptUnit: 'eggs' }))).toMatchObject({ attempts: null, attemptUnit: null })
+  })
+
+  it('has to be a whole number from 1 to 9,999,999', () => {
+    for (const bad of [0, -1, 1.5, 10_000_000]) {
+      expect(validateDraft(dex, shiny({ attempts: bad }), options)).toEqual({ attempts: 'Use a whole number from 1 to 9,999,999 for the counter.' })
+      expect(draftToInput(shiny({ attempts: bad }))).not.toHaveProperty('attempts')
+    }
+    for (const good of [1, 9_999_999]) expect(validateDraft(dex, shiny({ attempts: good }), options)).toEqual({})
+  })
+
+  it('does not follow the Pokémon into another game', () => {
+    expect(draftForAnotherGame(dex, shiny({ attempts: 1234, attemptUnit: 'resets' }), DEFAULTS)).toMatchObject({ shiny: false, attempts: null, attemptUnit: null })
   })
 })

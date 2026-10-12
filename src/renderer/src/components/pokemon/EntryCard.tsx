@@ -166,7 +166,7 @@ export function EntryCard({ entry, variant = 'card', showSpecies = true, actions
   const ball = ballName(entry.ball) ?? t('components.ball.unknown')
   const level = entry.level !== undefined ? t('lib.format.level', { level: String(entry.level) }) : undefined
   const valueText = (v: (typeof values)[number]): string =>
-    v.mark !== undefined ? t('components.entry.valueMarked', { label: v.label, text: v.text, mark: v.mark }) : t('components.entry.value', { label: v.label, text: v.text })
+    v.label === '' ? v.text : v.mark !== undefined ? t('components.entry.valueMarked', { label: v.label, text: v.text, mark: v.mark }) : t('components.entry.value', { label: v.label, text: v.text })
   const withMenu = actions && variant !== 'compact'
   // On a page about one Pokémon the name is implied, but the form that was caught still has to show.
   const formLabel = !showSpecies && (entry.form !== 0 || view.variant !== undefined || (entry.gmax === true && view.form?.gmax !== undefined)) ? view.name : undefined
@@ -430,9 +430,9 @@ export function EntryCard({ entry, variant = 'card', showSpecies = true, actions
       {values.length > 0 && (
         <dl className="pk-entry__values">
           {values.map((v) => (
-            <div key={v.id} title={v.title} className={v.id === 'ability' ? 'pk-entry__ability' : undefined}>
-              <dt>{v.label}</dt>
-              <dd>{v.text}</dd>
+            <div key={v.id} title={v.title} className={v.id === 'ability' ? 'pk-entry__ability' : v.id === 'attempts' ? 'pk-entry__count' : undefined}>
+              {v.label !== '' ? <dt>{v.label}</dt> : <dt className="u-sr-only">{v.title}</dt>}
+              <dd aria-hidden={v.label === '' || undefined}>{v.text}</dd>
               {v.mark !== undefined && <span className="pk-entry__mark">{v.mark}</span>}
             </div>
           ))}

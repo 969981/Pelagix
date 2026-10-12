@@ -38,6 +38,11 @@ const messages: Translation<'lib'> = {
   'values.pidTitle': 'PID {pid}',
   'values.ivsTitle': 'IV : PV / Attaque / Défense / Atq. Spé. / Déf. Spé. / Vitesse',
   'values.evsTitle': 'EV : PV / Attaque / Défense / Atq. Spé. / Déf. Spé. / Vitesse',
+  'values.count.encounters': { one: '{count} rencontre', many: '{count} rencontres', other: '{count} rencontres' },
+  'values.count.eggs': { one: '{count} œuf', many: '{count} œufs', other: '{count} œufs' },
+  'values.count.resets': { one: '{count} reset', many: '{count} resets', other: '{count} resets' },
+  'values.count.attempts': { one: '{count} tentative', many: '{count} tentatives', other: '{count} tentatives' },
+  'values.countTitle': 'Shasse : {counter}',
 
   'storage.warn.newer': 'Cette sauvegarde a été écrite par une version plus récente de Pelagix (format {version}) ; ce que cette version ne comprend pas a été laissé de côté.',
   'storage.warn.upgraded': 'Sauvegarde mise à niveau du format {from} au format {to}.',

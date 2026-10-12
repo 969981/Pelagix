@@ -44,6 +44,12 @@ const messages = {
   'values.pidTitle': 'PID {pid}',
   'values.ivsTitle': 'IVs: HP / Attack / Defense / Sp. Atk / Sp. Def / Speed',
   'values.evsTitle': 'EVs: HP / Attack / Defense / Sp. Atk / Sp. Def / Speed',
+  // The hunt counter of a shiny entry, as one line of its card: {count} is grouped for the language. countTitle is its tooltip.
+  'values.count.encounters': { one: '{count} encounter', other: '{count} encounters' },
+  'values.count.eggs': { one: '{count} egg', other: '{count} eggs' },
+  'values.count.resets': { one: '{count} reset', other: '{count} resets' },
+  'values.count.attempts': { one: '{count} attempt', other: '{count} attempts' },
+  'values.countTitle': 'Shiny hunt: {counter}',
 
   // lib/storage.ts: notes about a save that had to be repaired while loading or importing.
   'storage.warn.newer': 'This save was written by a newer version of Pelagix (format {version}); anything this version does not understand was left out.',

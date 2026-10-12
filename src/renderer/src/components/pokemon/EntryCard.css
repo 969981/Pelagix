@@ -430,6 +430,12 @@
   font-size: var(--fs-sm);
 }
 
+.pk-entry__count dd {
+  font-family: inherit;
+  font-size: var(--fs-sm);
+  font-variant-numeric: tabular-nums;
+}
+
 .pk-entry__mark {
   flex: none;
   color: var(--text-3);
